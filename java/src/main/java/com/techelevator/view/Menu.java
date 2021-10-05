@@ -73,4 +73,12 @@ public class Menu {
 		}
 		return BigDecimal.ZERO;
 	}
+
+	public String getProductCode(){
+		out.println();
+		System.out.println("Please choose a slot number");
+		String userInput = in.nextLine();
+		return userInput;
+	}
 }
+
