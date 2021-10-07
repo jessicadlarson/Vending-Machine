@@ -1,6 +1,8 @@
 package com.techelevator.fileio;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -25,5 +27,8 @@ public class LogWriter {
             System.out.println("Can not open file for writing.");
         }
     }
+
+
+
 
 }

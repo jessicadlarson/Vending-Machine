@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class FileReader {
-    private String path = "vendingmachine.csv";
-    File inputFile = new File(path);
 
-    public List<String[]> readFile() {
 
+    public List<String[]> readFile(String path) {
+        File inputFile = new File(path);
         List<String[]> parsedList = new ArrayList<>();
 
         try (Scanner inputScanner = new Scanner(inputFile.getAbsoluteFile())) {

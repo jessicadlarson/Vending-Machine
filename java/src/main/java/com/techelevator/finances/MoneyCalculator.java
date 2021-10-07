@@ -67,12 +67,14 @@ public class MoneyCalculator {
                 nickelCount++;
             }
         }
-
+        currentBalance = BigDecimal.ZERO;
         String changeDue = "Your change is: \n" + "Quarters: " + quarterCount + " Dimes: " + dimeCount + " Nickels: " + nickelCount +
                             "\nYour balance is: " + currencyFormat(currentBalance);
 
         return changeDue;
     }
+
+
 
     public String currencyFormat(BigDecimal amount){
         return NumberFormat.getCurrencyInstance().format(amount);

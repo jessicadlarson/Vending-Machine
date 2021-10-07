@@ -2,12 +2,15 @@ package com.techelevator;
 
 import com.techelevator.fileio.FileReader;
 import com.techelevator.fileio.LogWriter;
+import com.techelevator.fileio.SalesReport;
 import com.techelevator.finances.MoneyCalculator;
 import com.techelevator.items.Inventory;
+import com.techelevator.items.VendingMachine;
 import com.techelevator.items.VendingMachineItem;
 import com.techelevator.view.Menu;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,54 +33,63 @@ public class VendingMachineCLI {
 	private static final String FEED_MONEY_TWO = "2";
 	private static final String FEED_MONEY_FIVE = "5";
 	private static final String FEED_MONEY_TEN = "10";
-	private static final String[] FEED_MONEY_OPTIONS = { FEED_MONEY_ONE, FEED_MONEY_TWO, FEED_MONEY_FIVE, FEED_MONEY_TEN };
+	private static final String[] FEED_MONEY_OPTIONS = {FEED_MONEY_ONE, FEED_MONEY_TWO, FEED_MONEY_FIVE, FEED_MONEY_TEN};
 
 
 	private Menu menu;
-	private Inventory inventory = new Inventory();
-	private TreeMap<String, VendingMachineItem> inventoryMap;
-	private MoneyCalculator moneyCalculator;
-	private LogWriter logWriter;
-	Map<String, Integer> salesMap = new HashMap<>();
-	
+	private VendingMachine vendingMachine = new VendingMachine();
+//	private Inventory inventory = new Inventory();
+//	private TreeMap<String, VendingMachineItem> inventoryMap;
+//	private MoneyCalculator moneyCalculator;
+//	private LogWriter logWriter;
+//	private Map<String, Integer> salesMap = new HashMap<>();
+//	private SalesReport salesReport = new SalesReport();
+//	private BigDecimal currentTotalSales = BigDecimal.ZERO;
+
 
 	public VendingMachineCLI(Menu menu) {
 		this.menu = menu;
 		FileReader fileReader = new FileReader();
-		inventoryMap = inventory.getInventory(fileReader.readFile());
-		moneyCalculator = new MoneyCalculator();
-		logWriter = new LogWriter();
+//		inventoryMap = inventory.getInventory(fileReader.readFile("vendingmachine.csv"));
+	//	moneyCalculator = new MoneyCalculator();
+	//	logWriter = new LogWriter();
 
 	}
 
 	public void run() {
 		boolean isRunning = true;
+		vendingMachine.populateSalesMap();
 
 		while (isRunning) {
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
 
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
-				displayVendingMachineItems();
+				vendingMachine.displayVendingMachineItems();
+
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 				boolean isInPurchase = true;
 				while (isInPurchase) {
-					printCurrentMoneyProvided();
+					vendingMachine.printCurrentMoneyProvided();
+
 					String secondChoice = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
 					if (secondChoice.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
-						feedMoney();
+						vendingMachine.feedMoney(getFeedMoneyOption());
+
 					} else if (secondChoice.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
-						displayVendingMachineItems();
-						productSelection();
+						vendingMachine.displayVendingMachineItems();
+						vendingMachine.productSelection(getProductCode(vendingMachine.getInventoryMap()));
+						vendingMachine.runSalesReport();
+
 					} else {
-						makeChange();
+						vendingMachine.makeChange();
 						isInPurchase = false;
 					}
-					// do purchase
 				}
 			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
 				isRunning = false;
 			} else {
-				printSalesReport();
+				vendingMachine.runSalesReport();
+				vendingMachine.printSalesReportToConsole();
 			}
 		}
 	}
@@ -88,102 +100,33 @@ public class VendingMachineCLI {
 		cli.run();
 	}
 
-	public void displayVendingMachineItems() {
-		for (Map.Entry<String, VendingMachineItem> item : inventoryMap.entrySet()) {
-			String count = item.getValue().getCount() == 0 ? "SOLD OUT" : String.valueOf(item.getValue().getCount());
-			System.out.println(item.getKey() + "|" + item.getValue().getName() + "|" + item.getValue().getPrice() + "|" + count);
 
-		}
-
-	}
-
-	public void printCurrentMoneyProvided() {
-		System.out.println();
-		System.out.println("Current Money Provided: " + currencyFormat(moneyCalculator.getCurrentBalance()));
-	}
-
-	public BigDecimal getFeedMoneyOption(){
+	public BigDecimal getFeedMoneyOption() {
 		System.out.println("Please choose amount: $1, $2, $5, $10");
 		String userInput = (String) menu.getChoiceFromOptions(FEED_MONEY_OPTIONS);
 
-			if(userInput.equals(FEED_MONEY_ONE)){
-				return BigDecimal.ONE;
-			} else if(userInput.equals(FEED_MONEY_TWO)){
-				return new BigDecimal(2);
-			} else if(userInput.equals(FEED_MONEY_FIVE)){
-				return new BigDecimal(5);
-			} else if(userInput.equals(FEED_MONEY_TEN)){
-				return BigDecimal.TEN;
-			}
+		if (userInput.equals(FEED_MONEY_ONE)) {
+			return BigDecimal.ONE;
+		} else if (userInput.equals(FEED_MONEY_TWO)) {
+			return new BigDecimal(2);
+		} else if (userInput.equals(FEED_MONEY_FIVE)) {
+			return new BigDecimal(5);
+		} else if (userInput.equals(FEED_MONEY_TEN)) {
+			return BigDecimal.TEN;
+		}
 
 		return BigDecimal.ZERO;
 	}
 
-	public void feedMoney() {
-		BigDecimal amountToFeed = getFeedMoneyOption();
-		moneyCalculator.addMoney(amountToFeed);
-		logWriter.writeToFile("FEED MONEY: " + currencyFormat(amountToFeed) + " " + currencyFormat(moneyCalculator.getCurrentBalance()));
-	}
 
-	public String currencyFormat(BigDecimal amount) {
-		return NumberFormat.getCurrencyInstance().format(amount);
-	}
-
-	public String getProductCode(){
+	public String getProductCode(TreeMap<String, VendingMachineItem> inventoryMap) {
 		String[] productCodeOptions = inventoryMap.keySet().toArray(new String[inventoryMap.size()]);
 		System.out.println("Please choose a slot number");
 		String userInput = (String) menu.getChoiceFromOptions(productCodeOptions);
 		return userInput;
 	}
 
-	public void productSelection() {
-		String productSelected = getProductCode();
-		if (inventoryMap.containsKey(productSelected)) {
-			if (inventoryMap.get(productSelected).getCount() == 0) {
-				System.out.println("Item selected is sold out.");
-			} else {
-				dispenseItem(productSelected);
-			}
 
-		} else {
-			System.out.println("The product code given does not exist.");
-		}
-	}
-
-	public void dispenseItem(String productSelected) {
-		String saying = inventoryMap.get(productSelected).getSaying();
-		String name = inventoryMap.get(productSelected).getName();
-		String cost = currencyFormat(inventoryMap.get(productSelected).getPrice());
-		String moneyRemaining = currencyFormat(moneyCalculator.purchase(inventoryMap.get(productSelected).getPrice()));
-		inventoryMap.get(productSelected).decreaseCount();
-		System.out.println("Purchased: " + name + "|" + cost);
-		System.out.println(saying);
-		System.out.println("Money remaining: " + moneyRemaining);
-		addToSalesReport(productSelected);
-		logWriter.writeToFile(name + " " + productSelected + " " + cost + " " + moneyRemaining);
-	}
-
-	public void makeChange() {
-		String previousBalance = currencyFormat(moneyCalculator.getCurrentBalance());
-		System.out.println(moneyCalculator.makeChange());
-		String currentBalance = currencyFormat(moneyCalculator.getCurrentBalance());
-
-		logWriter.writeToFile("GIVE CHANGE: " + previousBalance + " " + currentBalance);
-	}
-
-	public void addToSalesReport(String productSelected) {
-		String name = inventoryMap.get(productSelected).getName();
-		if (salesMap.containsKey(name)) {
-			salesMap.put(name, salesMap.get(productSelected) + 1);
-		} else {
-			salesMap.put(name, 1);
-		}
-	}
-
-	public void printSalesReport() {
-		for (Map.Entry<String, Integer> item : salesMap.entrySet()) {
-			System.out.println(item.getKey() + "|" + item.getValue());
-		}
 
 	}
-}
+
