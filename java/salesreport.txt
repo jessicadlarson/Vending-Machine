@@ -1,16 +1,16 @@
-Stackers|0
-Cowtales|0
-Cola|0
-Heavy|0
-Cloud Popcorn|0
+Stackers|5
+Cowtales|2
+Cola|2
+Heavy|2
+Cloud Popcorn|2
 Dr. Salt|0
-Little League Chew|0
+Little League Chew|1
 Wonka Bar|0
 Crunchie|0
 Moonpie|0
 Potato Crisps|0
-Triplemint|8
+Triplemint|11
 Mountain Melter|0
 U-Chews|0
 Grain Waves|0
-Chiclets|9
+Chiclets|12

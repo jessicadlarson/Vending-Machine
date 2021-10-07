@@ -59,6 +59,7 @@ public class VendingMachineCLI {
 						vendingMachine.displayVendingMachineItems();
 						vendingMachine.productSelection(getProductCode(vendingMachine.getInventoryMap()));
 						vendingMachine.runSalesReport();
+						vendingMachine.populateSalesMap();
 
 					} else {
 						vendingMachine.makeChange();
@@ -69,6 +70,7 @@ public class VendingMachineCLI {
 				isRunning = false;
 			} else {
 				vendingMachine.runSalesReport();
+				vendingMachine.populateSalesMap();
 				vendingMachine.printSalesReportToConsole();
 			}
 		}

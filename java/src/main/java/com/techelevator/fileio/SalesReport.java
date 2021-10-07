@@ -97,7 +97,7 @@ public class SalesReport {
     }
 
     public void printSalesReportToConsole(Map<String, Integer> salesMap){
-        for(Map.Entry<String, Integer> item : salesMap.entrySet()){
+        for(Map.Entry<String, Integer> item : allTimeSalesMap.entrySet()){
             System.out.println(item.getKey() + "|" + item.getValue());
         }
         System.out.println("TOTAL SALES: " + currencyFormat(total));

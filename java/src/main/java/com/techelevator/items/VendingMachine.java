@@ -65,7 +65,12 @@ public class VendingMachine {
             if (inventoryMap.get(productSelected).getCount() == 0) {
                 System.out.println("Item selected is sold out.");
             } else {
-                dispenseItem(productSelected);
+                if(validatedMoney(inventoryMap.get(productSelected).getPrice())){
+                    dispenseItem(productSelected);
+                }
+                else{
+                    System.out.println("Please provide enough money.");
+                }
             }
 
         } else {
@@ -120,6 +125,13 @@ public class VendingMachine {
     public void printSalesReportToConsole(){
         salesReport.printSalesReportToConsole(salesMap);
 
+    }
+
+    public boolean validatedMoney(BigDecimal price){
+        if(moneyCalculator.getCurrentBalance().compareTo(price) >= 0 ){
+            return true;
+        }
+        return false;
     }
 
 }
