@@ -1,19 +1,10 @@
 package com.techelevator;
 
 import com.techelevator.fileio.FileReader;
-import com.techelevator.fileio.LogWriter;
-import com.techelevator.fileio.SalesReport;
-import com.techelevator.finances.MoneyCalculator;
-import com.techelevator.items.Inventory;
 import com.techelevator.items.VendingMachine;
 import com.techelevator.items.VendingMachineItem;
 import com.techelevator.view.Menu;
-
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeMap;
 
 public class VendingMachineCLI {
@@ -38,22 +29,11 @@ public class VendingMachineCLI {
 
 	private Menu menu;
 	private VendingMachine vendingMachine = new VendingMachine();
-//	private Inventory inventory = new Inventory();
-//	private TreeMap<String, VendingMachineItem> inventoryMap;
-//	private MoneyCalculator moneyCalculator;
-//	private LogWriter logWriter;
-//	private Map<String, Integer> salesMap = new HashMap<>();
-//	private SalesReport salesReport = new SalesReport();
-//	private BigDecimal currentTotalSales = BigDecimal.ZERO;
+
 
 
 	public VendingMachineCLI(Menu menu) {
 		this.menu = menu;
-		FileReader fileReader = new FileReader();
-//		inventoryMap = inventory.getInventory(fileReader.readFile("vendingmachine.csv"));
-	//	moneyCalculator = new MoneyCalculator();
-	//	logWriter = new LogWriter();
-
 	}
 
 	public void run() {
