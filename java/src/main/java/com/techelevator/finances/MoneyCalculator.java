@@ -55,7 +55,7 @@ public class MoneyCalculator {
         //    1 : if value of this BigDecimal is greater than that of BigDecimal object passed as parameter.
         //    -1 : if value of this BigDecimal is less than that of BigDecimal object passed as parameter.
 
-        while(currentBalance.compareTo(DIME) >= 0){
+        while(currentBalance.compareTo(NICKEL) >= 0){
             if(currentBalance.compareTo(QUARTER) >= 0){
                 currentBalance = currentBalance.subtract(QUARTER);
                 quarterCount++;
